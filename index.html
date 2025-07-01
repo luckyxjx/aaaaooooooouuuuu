@@ -89,7 +89,8 @@
 
     </div>
 
-    <script>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
         // --- DOM Elements ---
         const heartWrapper = document.getElementById('heart-wrapper');
         const heartScreen = document.getElementById('heart-screen');
@@ -100,7 +101,7 @@
 
         // --- State ---
         let clickCount = 0;
-        const CLICK_GOAL = 30; // Reduced for a quicker reveal!
+        const CLICK_GOAL = 30;
 
         // --- Event Listener ---
         heartWrapper.addEventListener('click', handleHeartClick);
@@ -109,49 +110,45 @@
             if (clickCount >= CLICK_GOAL) return;
 
             clickCount++;
-            
-            // Add a pulse animation to the SVG for visual feedback
+
+            // Add pulse animation
             const svg = document.getElementById('heart-svg');
             svg.classList.add('heart-pulse');
             svg.addEventListener('animationend', () => {
                 svg.classList.remove('heart-pulse');
             }, { once: true });
 
-            // Calculate progress
+            // Progress math
             const progress = clickCount / CLICK_GOAL;
             const progressPercent = Math.round(progress * 100);
+            const offset = `${progress * 100}%`;
 
-            // Update the gradient to "fill" the heart
-            const offset = ${progress * 100}%;
+            // Update gradient
             gradientStop2.setAttribute('offset', offset);
             gradientStop3.setAttribute('offset', offset);
 
-            // Update the progress text
-            progressText.textContent = ${progressPercent}%;
+            // Update text
+            progressText.textContent = `${progressPercent}%`;
 
-            // Check for completion
+            // Done!
             if (clickCount >= CLICK_GOAL) {
-                setTimeout(revealFinalMessage, 500); // A short delay before showing the final message
+                setTimeout(revealFinalMessage, 500);
             }
         }
 
-        // --- Screen Transition ---
         function revealFinalMessage() {
-            // Fade out the heart screen
             heartScreen.style.transition = 'opacity 0.5s ease-out';
             heartScreen.style.opacity = '0';
-            
-            // After the fade-out animation, hide it and show the final screen
+
             setTimeout(() => {
                 heartScreen.style.display = 'none';
                 finalScreen.classList.remove('hidden');
                 triggerConfetti();
             }, 500);
         }
-        
-        // --- Confetti Effect ---
+
         function triggerConfetti() {
-            const container = document.body; // Use the whole body for a fuller effect
+            const container = document.body;
             for (let i = 0; i < 80; i++) {
                 createParticle(container);
             }
@@ -163,33 +160,31 @@
             container.appendChild(particle);
 
             const size = Math.random() * 8 + 4;
-            const x = Math.random() * 100; // horizontal position in vw
+            const x = Math.random() * 100;
             const destinationY = container.clientHeight + 20;
             const rotation = Math.random() * 520;
-            const duration = Math.random() * 2000 + 4000; // Slower, more graceful fall
-            
-            // Updated colors for a yellow/gold theme
-            const colors = ['#FFD700', '#FFC107', '#FFFBEB', '#F59E0B', '#FBBF24'];
-            particle.style.width = ${size}px;
-            particle.style.height = ${size}px;
-            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            particle.style.left = ${x}vw;
-            particle.style.top = -20px; // Start just above the viewport
+            const duration = Math.random() * 2000 + 4000;
 
-            // Animate the particle's fall and rotation
+            const colors = ['#FFD700', '#FFC107', '#FFFBEB', '#F59E0B', '#FBBF24'];
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.left = `${x}vw`;
+            particle.style.top = `-20px`;
+
             const animation = particle.animate([
-                { transform: translateY(0) rotate(0deg), opacity: 1 },
-                { transform: translateY(${destinationY}px) rotate(${rotation}deg), opacity: 0 }
+                { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
+                { transform: `translateY(${destinationY}px) rotate(${rotation}deg)`, opacity: 0 }
             ], {
                 duration: duration,
                 easing: 'ease-out',
             });
 
-            // Remove the particle from the DOM once the animation is finished
             animation.onfinish = () => {
                 particle.remove();
             };
         }
-    </script>
+    });
+</script>
 </body>
 </html>
